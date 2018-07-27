@@ -1,3 +1,6 @@
-self.addEventListener('fetch', function() {
-    console.log('Hello Dor!');
+self.addEventListener('fetch', function(event) {
+    console.log(event.request);
+    if (event.request.url.endsWith('.jpg')) {
+        event.respondWith(fetch('/imgs/dr-evil.gif'));
+    }
 });
