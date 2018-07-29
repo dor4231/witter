@@ -18,22 +18,10 @@ self.addEventListener('install', function(event) {
 });
 
 self.addEventListener('fetch', function(event) {
-    console.log("New SW");
-    console.log(event.request);
-    caches.open('wittr-static-v1').then(function(cache){
-        cache.match(event.request).then(function(response) {
-            return response;
-        });
-    });
-
-    // event.respondWith(
-    //     fetch(event.request).then(function(response) {
-    //         if (response.status === 404) {
-    //             return fetch('/imgs/dr-evil.gif');
-    //         }
-    //         return response;
-    //     }).catch(function() {
-    //         return new Response("Bummer, nothing to display");
-    //     })
-    // );
+    event.respondWith(
+        caches.match(event.request).then(function(req) {
+            if (req) return req;
+            else return fetch(event.request);
+        })
+    );
 });
