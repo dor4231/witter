@@ -1,3 +1,5 @@
+const staticCacheName = 'witter-static-v2';
+
 self.addEventListener('install', function(event) {
     var urlsToCache = [
       '/',
@@ -9,7 +11,7 @@ self.addEventListener('install', function(event) {
     ];
   
     event.waitUntil(
-      caches.open('wittr-static-v2').then(function(cache) {
+      caches.open(staticCacheName).then(function(cache) {
         return cache.addAll(urlsToCache);
       })
     );
@@ -17,7 +19,16 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('activate', function(event) {
     event.waitUntil(
-        caches.delete('wittr-static-v1')
+        caches.keys().then(function(cacheNames) {
+            return Promise.all(
+                cacheNames.filter(function(cacheName) {
+                    return cacheName.startsWith('witter-') && 
+                           cacheName !== staticCacheName;
+                }).map(function(cacheName) {
+                    return caches.delete(cacheName);
+                })
+            );
+        })
     );
 });
 
